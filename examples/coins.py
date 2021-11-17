@@ -9,7 +9,6 @@ from skimage.segmentation import clear_border
 from skimage.measure import label
 from skimage.morphology import closing, square, remove_small_objects
 import napari
-from explode_view._widget import explode_view
 
 image = data.coins()[50:-50, 50:-50]
 

@@ -9,12 +9,12 @@ from ._explode_view import get_exploded_view_func
 
 @magic_factory(
         auto_call=True,
-        # factor={
-        #         'widget_type': widgets.FloatSlider,  # yapf: disable
-        #         'min': 1,
-        #         'max': 3,
-        #         'step': 0.1
-        #         },
+        factor={
+                'widget_type': widgets.FloatSlider,  # yapf: disable
+                'min': 1,
+                'max': 4,
+                'step': 0.1
+                },
         )
 def explode_view(
         viewer: napari.viewer.Viewer,
@@ -41,15 +41,16 @@ def explode_view(
                            ) + scale * shape * (1-factor) / 2
     meta = {'scale': scale, 'translate': translate}
     new_images = [new_image_0] + [func(factor)[1] for func in funcs[1:]]
-    new_layers = [(
-            new_labels, {**meta, 'name': labels_layer.name + ' exploded'},
-            'labels'
-            )]
+    new_layers = []
     for image, image_layer in zip(new_images, image_layers):
         new_layers.append((
-                image, {**meta, 'name': image_layer.name + ' exploded'},
+                image, {**meta, 'name': image_layer.name + ' exploded', 'blending': image_layer.blending, 'colormap': image_layer.colormap},
                 'image'
                 ))
+    new_layers.append((
+            new_labels, {**meta, 'name': labels_layer.name + ' exploded', 'visible': False},
+            'labels'
+            ))
     return new_layers
 
 
